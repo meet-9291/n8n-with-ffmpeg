@@ -1,10 +1,16 @@
-FROM n8nio/n8n:latest
+FROM node:18-bullseye-slim
 
-# Switch to root user to install packages
+# Install ffmpeg
 USER root
+RUN apt-get update && apt-get install -y ffmpeg \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install ffmpeg with Alpine package manager
-RUN apk add --no-cache ffmpeg
+# Install n8n (manual install)
+RUN npm install -g n8n
 
-# Switch back to default user for n8n
+# Set working directory
+WORKDIR /home/node
+
 USER node
+
+CMD ["n8n"]
